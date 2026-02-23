@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Sci - News</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+
+  <!-- Heading font -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --primary:#1e3a8a;
+      --accent:#7c3aed;
+      --muted:#eef2ff;
+      --card:#ffffff;
+      --glass: rgba(255,255,255,0.6);
+      --radius:12px;
+    }
+
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      background: linear-gradient(180deg,#f7fbff 0%, #eef6ff 100%);
+      color:#123;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      min-height:100vh;
+      display:flex;
+      flex-direction:column;
+    }
+
+    /* TOP BAR */
+    .top-bar{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      padding:12px 16px;
+      background: linear-gradient(90deg,var(--primary), var(--accent));
+      color:#fff;
+      box-shadow: 0 6px 18px rgba(30,58,138,0.18);
+      position:sticky;
+      top:0;
+      z-index:50;
+      border-bottom-left-radius: 0;
+      border-bottom-right-radius: 18px;
+    }
+
+    .brand-left{
+      display:flex;
+      align-items:center;
+      gap:10px;
+    }
+
+    .logo{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      width:44px;
+      height:44px;
+      border-radius:10px;
+      background: rgba(255,255,255,0.12);
+      padding:4px;
+      flex-shrink:0;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.12) inset;
+    }
+
+    .logo img{ width:100%; height:100%; object-fit:cover; border-radius:8px; }
+
+    .title{
+      font-weight:700;
+      letter-spacing:0.4px;
+      display:flex;
+      flex-direction:column;
+      line-height:1;
+      font-size:16px;
+    }
+
+    .subtitle{ font-size:11px; opacity:0.95; margin-top:2px; font-weight:600; font-family: 'Poppins', sans-serif; }
+
+    /* three-dot menu */
+    .menu-wrap{ position:relative; display:inline-block; }
+    .menu-btn{
+      background: transparent;
+      border: none;
+      color: white;
+      font-size:22px;
+      padding:6px 10px;
+      cursor:pointer;
+      border-radius:8px;
+    }
+    .menu-btn:active{ transform:translateY(1px); }
+
+    .dropdown{
+      position:absolute;
+      right:0;
+      top:44px;
+      min-width:180px;
+      background:var(--card);
+      box-shadow: 0 8px 24px rgba(9,30,66,0.12);
+      border-radius:10px;
+      overflow:hidden;
+      border:1px solid rgba(18,42,80,0.06);
+      display:none;
+      z-index:60;
+    }
+    .dropdown.show{ display:block; animation:pop .14s ease-out; }
+    @keyframes pop{ from { transform: translateY(-6px) scale(.98); opacity:0 } to { transform:none; opacity:1 } }
+
+    .dropdown button{
+      width:100%;
+      text-align:left;
+      padding:12px 14px;
+      background:transparent;
+      border:none;
+      font-weight:600;
+      cursor:pointer;
+      color:#0b2545;
+    }
+    .dropdown button:hover{ background: #f6f9ff; }
+
+    /* MAIN CONTENT */
+    .container{
+      width:100%;
+      max-width:900px;
+      margin:20px auto;
+      padding:18px;
+    }
+
+    .card{
+      background: linear-gradient(180deg, rgba(255,255,255,0.9), rgba(255,255,255,0.82));
+      border-radius:14px;
+      padding:18px;
+      box-shadow: 0 10px 30px rgba(15,35,80,0.06);
+      border: 1px solid rgba(12,30,70,0.04);
+    }
+
+    h1{
+      margin:0 0 10px 0;
+      font-family: 'Poppins', sans-serif; /* changed heading font */
+      font-size:28px;
+      color: var(--primary);
+      letter-spacing: -0.6px;
+    }
+
+    p{ margin:10px 0; color:#123d66; }
+
+    /* formula box */
+    .formula{
+      background: linear-gradient(90deg, #f3f6ff, #eef7ff);
+      border-left:5px solid var(--accent);
+      padding:12px 14px;
+      border-radius:10px;
+      font-family: "Courier New", monospace;
+      color:#17345a;
+      margin:12px 0;
+      display:inline-block;
+    }
+
+    /* image */
+    .hero{
+      width:100%;
+      max-width:520px;
+      margin: 14px auto;
+      border-radius:12px;
+      overflow:hidden;
+      box-shadow: 0 8px 24px rgba(30,58,138,0.08);
+      border:1px solid rgba(18,42,80,0.04);
+    }
+    .hero img{ width:100%; height:auto; display:block; }
+
+    /* small info card that appears when you press Info */
+    .info-panel{
+      margin-top:14px;
+      padding:12px;
+      border-radius:10px;
+      background: linear-gradient(180deg,#fff,#fbfdff);
+      border:1px solid rgba(15,30,70,0.04);
+      display:none;
+      color:#0b2a4a;
+    }
+    .info-panel.show{ display:block; animation:fadeIn .18s ease both; }
+    @keyframes fadeIn { from { opacity:0; transform: translateY(-6px) } to { opacity:1; transform:none } }
+
+    .greeting{
+      margin-top:18px;
+      background: linear-gradient(90deg,#e6f6ef,#f0fbff);
+      padding:14px;
+      border-radius:10px;
+      text-align:center;
+      font-weight:700;
+      color:#0b5a3b;
+      border:1px solid rgba(11,90,59,0.06);
+    }
+
+    /* welcome crumb text */
+    .welcome{ text-align:center; color:#0a6b6b; margin-bottom:12px; font-weight:600; }
+
+    /* responsive */
+    @media (max-width:600px){
+      .top-bar{ padding:10px; border-radius:0 0 14px 14px; }
+      .title{ font-size:15px; }
+      h1{ font-size:22px; }
+      .container{ padding:12px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- TOP BAR -->
+  <header class="top-bar" role="banner">
+    <div class="brand-left" aria-label="site brand">
+      <div class="logo" title="Sci - News logo">
+        <!-- Replace tube.png with the filename of the image you uploaded -->
+        <img src="tube.png" alt="test tube logo">
+      </div>
+
+      <div class="title" aria-hidden="false">
+        <span style="font-size:16px">sci - news</span>
+        <span class="subtitle">science made simple</span>
+      </div>
+    </div>
+
+    <div class="menu-wrap" aria-haspopup="true">
+      <button class="menu-btn" id="menuBtn" aria-expanded="false" aria-controls="menuList" title="More">
+        ⋮
+      </button>
+
+      <div class="dropdown" id="menuList" role="menu" aria-hidden="true">
+        <button id="infoItem" role="menuitem">Info</button>
+        <!-- you can add more menu items here later -->
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN -->
+  <main class="container" role="main">
+    <div class="card">
+      <p id="welcomeMessage" class="welcome" aria-live="polite"></p>
+
+      <h1>Why is the Sky Blue?</h1>
+
+      <p>
+        Sunlight contains many colours. When light travels through the air it hits tiny gas molecules.
+        The shorter wavelengths (blue and violet) are scattered more than the longer red wavelengths. That scattered blue light from all directions is what makes the sky look blue.
+      </p>
+
+      <div class="hero" role="img" aria-label="photograph of a blue sky">
+        <!-- an example fallback image; you can keep or replace -->
+        <img src="https://upload.wikimedia.org/wikipedia/commons/5/5f/Blue_sky.jpg" alt="blue sky">
+      </div>
+
+      <h2 style="color:#234a7a; margin-top:8px;">Quick explanation (with formula)</h2>
+      <p>
+        The strength of Rayleigh scattering (for particles much smaller than the wavelength) varies as:
+      </p>
+
+      <div class="formula">Rayleigh scattering ∝ 1 / λ⁴</div>
+
+      <p>
+        Since blue light has a smaller wavelength (λ) than red light, blue is scattered much more strongly.
+        Our eyes are more sensitive to blue than violet, and the upper atmosphere absorbs some violet — so the sky appears blue.
+      </p>
+
+      <!-- Info panel (hidden until Info pressed) -->
+      <div id="infoPanel" class="info-panel" role="region" aria-hidden="true">
+        <strong>About SciNews</strong>
+        <p style="margin:8px 0 0 0;">
+          SciNews is a short, friendly site to spark curiosity about everyday science.
+          We explain common phenomena (like why the sky is blue) using simple text, a few formulas, and clear images — so everyone can understand the science behind daily life.
+        </p>
+      </div>
+
+      <div class="greeting">
+        Thanks for reading — please open our links again to discover more science! 🚀
+      </div>
+    </div>
+  </main>
+
+  <script>
+    /* ---- cookie (visit detection) ---- */
+    function setCookie(name,value,days){
+      const d = new Date();
+      d.setTime(d.getTime() + (days*24*60*60*1000));
+      document.cookie = name + "=" + encodeURIComponent(value) + ";expires=" + d.toUTCString() + ";path=/";
+    }
+    function getCookie(name){
+      const cname = name + "=";
+      const parts = document.cookie.split(';').map(s => s.trim());
+      for (let p of parts){
+        if (p.indexOf(cname) === 0) return decodeURIComponent(p.substring(cname.length));
+      }
+      return "";
+    }
+
+    const welcomeEl = document.getElementById('welcomeMessage');
+    const visited = getCookie('sci_visited_v1');
+
+    if (!visited){
+      setCookie('sci_visited_v1','yes',30); // remember for 30 days
+      welcomeEl.textContent = "👋 Welcome! Looks like this is your first visit.";
+    } else {
+      welcomeEl.textContent = "😊 Welcome back! Great to see you again.";
+    }
+
+    /* ---- dropdown menu behavior ---- */
+    const menuBtn = document.getElementById('menuBtn');
+    const menuList = document.getElementById('menuList');
+    const infoItem = document.getElementById('infoItem');
+    const infoPanel = document.getElementById('infoPanel');
+
+    function closeMenu(){
+      menuList.classList.remove('show');
+      menuList.setAttribute('aria-hidden','true');
+      menuBtn.setAttribute('aria-expanded','false');
+    }
+    function openMenu(){
+      menuList.classList.add('show');
+      menuList.setAttribute('aria-hidden','false');
+      menuBtn.setAttribute('aria-expanded','true');
+    }
+
+    menuBtn.addEventListener('click', function(e){
+      e.stopPropagation();
+      if (menuList.classList.contains('show')) closeMenu(); else openMenu();
+    });
+
+    // close menu when clicking outside
+    document.addEventListener('click', function(){
+      closeMenu();
+    });
+
+    menuList.addEventListener('click', function(e){
+      e.stopPropagation(); // keep menu open while clicking items
+    });
+
+    // Info item click: show brief information panel in the page
+    infoItem.addEventListener('click', function(){
+      closeMenu();
+      const isShown = infoPanel.classList.contains('show');
+      if (isShown){
+        infoPanel.classList.remove('show');
+        infoPanel.setAttribute('aria-hidden','true');
+      } else {
+        infoPanel.classList.add('show');
+        infoPanel.setAttribute('aria-hidden','false');
+        // scroll into view for small screens
+        infoPanel.scrollIntoView({behavior:'smooth', block:'center'});
+      }
+    });
+
+    // close info panel when clicking outside it
+    document.addEventListener('click', function(ev){
+      const target = ev.target;
+      if (!infoPanel.contains(target) && target !== infoItem){
+        infoPanel.classList.remove('show');
+        infoPanel.setAttribute('aria-hidden','true');
+      }
+    });
+
+    // keyboard accessibility: close with Escape
+    document.addEventListener('keydown', function(e){
+      if (e.key === 'Escape'){
+        closeMenu();
+        infoPanel.classList.remove('show');
+        infoPanel.setAttribute('aria-hidden','true');
+      }
+    });
+  </script>
+</body>
+</html>
